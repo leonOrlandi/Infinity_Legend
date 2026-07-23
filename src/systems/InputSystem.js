@@ -17,6 +17,7 @@ export default class InputSystem {
       down: this.cursors.down.isDown || this.wasd.down.isDown,
       left: this.cursors.left.isDown || this.wasd.left.isDown,
       right: this.cursors.right.isDown || this.wasd.right.isDown,
+      sprint: this.cursors.shift.isDown,
     };
   }
 }

@@ -47,6 +47,7 @@ npm run preview
 - **S / Seta para baixo**: mover para baixo
 - **A / Seta para esquerda**: mover para a esquerda
 - **D / Seta para direita**: mover para a direita
+- **Shift** (segurar): sprint (corrida) enquanto se move
 
 ## Estrutura de pastas
 
@@ -64,9 +65,13 @@ docs/         # Documentação técnica (ver docs/architecture.md)
 ## Estado atual
 
 - `BootScene`: cena de boot, ponto de entrada que inicia a `WorldScene`.
-- `WorldScene`: mundo de 3200x3200px com grade de fundo, player controlável e
-  câmera que segue o player dentro dos limites do mundo.
-- Player: retângulo colorido com física Arcade, movimento em 8 direções normalizado
-  (sem ficar mais rápido na diagonal).
+- `WorldScene`: tilemap de teste (40x30 tiles) com paredes de borda e obstáculos
+  internos, player controlável e câmera que segue o player dentro dos limites do mundo.
+- Player: sprite humanoide (placeholder gerado por código, sem arte externa) com:
+  - Movimento em 8 direções com aceleração/desaceleração suave.
+  - Colisão com o tilemap (paredes bloqueiam o movimento).
+  - Máquina de estados (idle / walk / run) que dirige animação e velocidade-alvo.
+  - Sprint segurando Shift.
 
-Veja `docs/architecture.md` para mais detalhes sobre a arquitetura.
+Veja `docs/architecture.md` para mais detalhes sobre a arquitetura, incluindo como
+o `Player` foi estruturado para ser estendido com combate e magia.
