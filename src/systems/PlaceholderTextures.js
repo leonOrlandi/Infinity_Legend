@@ -1,37 +1,7 @@
-export const TILE_SIZE = 32;
-export const TILE_FLOOR = 0;
-export const TILE_WALL = 1;
-
 export const PLAYER_FRAME_WIDTH = 32;
 export const PLAYER_FRAME_HEIGHT = 48;
 export const PLAYER_DIRECTIONS = ['down', 'left', 'right', 'up'];
 const PLAYER_FRAMES_PER_DIRECTION = 4;
-
-/**
- * Procedurally draws a 2-tile tileset (floor, wall) so the project has a
- * working tilemap without depending on external art. Swap this for a real
- * Tiled tileset image later without touching WorldScene's tilemap code.
- */
-export function generateTilesetTexture(scene, key = 'tiles') {
-  if (scene.textures.exists(key)) return key;
-
-  const g = scene.make.graphics({ x: 0, y: 0 }, false);
-
-  g.fillStyle(0x2e2e44, 1);
-  g.fillRect(0, 0, TILE_SIZE, TILE_SIZE);
-  g.lineStyle(1, 0x3d3d5c, 1);
-  g.strokeRect(0.5, 0.5, TILE_SIZE - 1, TILE_SIZE - 1);
-
-  g.fillStyle(0x5a4632, 1);
-  g.fillRect(TILE_SIZE, 0, TILE_SIZE, TILE_SIZE);
-  g.lineStyle(2, 0x3c2f1f, 1);
-  g.strokeRect(TILE_SIZE + 1, 1, TILE_SIZE - 2, TILE_SIZE - 2);
-
-  g.generateTexture(key, TILE_SIZE * 2, TILE_SIZE);
-  g.destroy();
-
-  return key;
-}
 
 /**
  * Procedurally draws a humanoid spritesheet: 4 facing directions x 4 frames

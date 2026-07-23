@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { DEPTH } from '../../systems/depths.js';
 import StateMachine from '../../systems/StateMachine.js';
 import { generateHumanoidSpriteSheet } from '../../systems/PlaceholderTextures.js';
 import { createPlayerAnimations } from './PlayerAnimations.js';
@@ -22,6 +23,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     scene.add.existing(this);
     scene.physics.add.existing(this);
+
+    // Fixed depth, not display-list order: map layers get destroyed/recreated
+    // on every area transition and would otherwise re-append above the player.
+    this.setDepth(DEPTH.PLAYER);
 
     this.body.setSize(20, 14).setOffset(6, 34);
     this.body.setCollideWorldBounds(true);
