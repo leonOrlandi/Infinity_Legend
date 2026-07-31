@@ -1,4 +1,9 @@
-# Arquitetura do projeto
+# Arquitetura do protótipo Phaser
+
+> Este documento cobre o protótipo de mundo aberto em Phaser 3 (`src/main.js`,
+> `src/scenes/`, `src/entities/`, `src/systems/`), que não é o app carregado por
+> padrão. O motor React + Canvas, que é o que `npm run dev` abre hoje, está em
+> [`react-canvas-engine.md`](react-canvas-engine.md).
 
 ## Estrutura de pastas
 

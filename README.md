@@ -1,11 +1,17 @@
 # Infinity Legend
 
-Protótipo de jogo de mundo aberto construído com [Phaser 3](https://phaser.io/) e
-[Vite](https://vitejs.dev/).
+Jogo 2D em [React](https://react.dev/) + `<canvas>`, com motor próprio (game loop,
+input e renderização escritos à mão), rodando sobre [Vite](https://vitejs.dev/).
 
-> **Nota:** Phaser 3 é um motor 2D (canvas/WebGL). Este projeto implementa um mundo
-> aberto em visão top-down 2D — não renderização 3D real. Se o objetivo for 3D
-> verdadeiro, considere um motor como Three.js/Babylon.js ou o Phaser 4 (WebGPU/3D).
+O app que `npm run dev` abre é o motor React/Canvas — ponto de entrada `src/main.jsx`,
+componente principal `src/game/GameEngine.jsx`. Documentação:
+[`docs/react-canvas-engine.md`](docs/react-canvas-engine.md).
+
+> **Protótipo Phaser:** o experimento anterior de mundo aberto com
+> [Phaser 3](https://phaser.io/) continua no repositório (`src/scenes/`, `src/entities/`,
+> `src/systems/`, entrada em `src/main.js`) e está documentado em
+> [`docs/architecture.md`](docs/architecture.md). Para voltar a rodá-lo, aponte o
+> `<script>` do `index.html` para `/src/main.js`.
 
 ## Requisitos
 
@@ -43,27 +49,56 @@ npm run preview
 
 ## Controles
 
-- **W / Seta para cima**: mover para cima
-- **S / Seta para baixo**: mover para baixo
-- **A / Seta para esquerda**: mover para a esquerda
-- **D / Seta para direita**: mover para a direita
-- **Shift** (segurar): sprint (corrida) enquanto se move
+- **A / D** ou **← / →**: mover
+- **W**, **↑** ou **Espaço**: pular (segurar para pular mais alto)
+- **Shift** (segurar): correr
+- **Clique esquerdo**: atacar na direção do cursor
+- **P** ou **Esc**: pausar / continuar
+- **Enter**: começar · **R**: reiniciar após o fim de jogo
 
 ## Estrutura de pastas
 
 ```
 src/
-  scenes/     # Cenas do Phaser (BootScene, WorldScene)
-  entities/   # Entidades do jogo (Player, etc.)
-  systems/    # Sistemas reutilizáveis (input, máquina de estados, MapManager, etc.)
+  main.jsx    # Ponto de entrada React
+  App.jsx
+  game/       # Motor React + Canvas
+    GameEngine.jsx  # Componente principal (canvas, loop, input, HUD)
+    constants.js    # Dimensões do canvas, velocidades, gravidade, cores
+    gameState.js    # Estado global (scene, player, enemies, ui)
+    InputSystem.js  # Teclado + mouse
+    update.js       # Simulação em passo fixo
+    render.js       # Desenho no canvas 2D
+    useGameLoop.js  # Hook do requestAnimationFrame
+    Hud.jsx         # HUD em React sobre o canvas
+  scenes/     # (Phaser) Cenas BootScene, WorldScene
+  entities/   # (Phaser) Entidades do jogo (Player, etc.)
+  systems/    # (Phaser) Sistemas reutilizáveis (input, MapManager, etc.)
   assets/
-    tilemaps/ # Mapas Tiled reais: tileset.png, village.json, forest.json
-  main.js     # Ponto de entrada, configuração do Phaser.Game
+    tilemaps/ # (Phaser) Mapas Tiled reais
+  main.js     # (Phaser) Ponto de entrada do protótipo anterior
 public/       # Arquivos estáticos servidos sem passar pelo bundler
-docs/         # Documentação técnica (ver docs/architecture.md)
+docs/         # Documentação técnica
 ```
 
-## Estado atual
+## Estado atual — motor React + Canvas
+
+- Canvas de **800x600** (buffer ajustado ao `devicePixelRatio`), tudo desenhado com
+  retângulos coloridos — ainda sem assets.
+- **Game loop** com `requestAnimationFrame` e passo fixo de 1/60 s via acumulador,
+  então a física não muda de comportamento conforme o refresh rate do monitor.
+- **Estado global** mutável fora do React (`useRef`), com uma ponte que só notifica a
+  HUD quando algum valor visível muda — nada de re-render por frame.
+- **Cenas**: menu, jogando, pausado e fim de jogo.
+- **Input**: teclado (com "segurando" vs. "pressionado neste passo") e mouse
+  (posição em coordenadas de jogo, clique, entrada/saída do canvas).
+- **Gameplay**: gravidade e pulo de altura variável, corrida, inimigos que entram pelas
+  bordas e perseguem o player, ataque no clique, dano com knockback e invulnerabilidade,
+  waves que aceleram o spawn, pontuação e vida na HUD.
+
+Detalhes em [`docs/react-canvas-engine.md`](docs/react-canvas-engine.md).
+
+## Estado do protótipo Phaser
 
 - `BootScene`: pré-carrega o tileset e o mapa inicial (`village`), depois inicia `WorldScene`.
 - `WorldScene`: carrega mapas Tiled reais (`src/assets/tilemaps/*.json`) através do
